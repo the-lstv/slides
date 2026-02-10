@@ -1,5 +1,10 @@
 #template /assets/presentation.html
 
+<head>
+    @use(hljs[lang:typescript, theme:atom-one-dark]);
+    @use("/programming-languages/assets/shader.js");
+</head>
+
 <div>
     <svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080" viewBox="0 0 1920 1080" fill="none">
     <rect width="1920" height="1080" fill="url(#paint0_radial_10783_70)"/>
@@ -15,9 +20,8 @@
     </svg>
 </div>
 
-<div>
+<div #intro data-accent="#F0A860">
     <svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080" viewBox="0 0 1920 1080" fill="none">
-    <rect width="1920" height="1080" fill="url(#paint0_radial_10783_86)"/>
     <text fill="#F0A860" style="white-space: pre" xml:space="preserve" font-family="JetBrains Mono" font-size="96" font-weight="800" letter-spacing="-0.02em"><tspan x="96" y="160.06">Introduction</tspan></text>
     <text fill="#894A0A" style="white-space: pre" xml:space="preserve" font-family="JetBrains Mono" font-size="48" letter-spacing="-0.02em"><tspan x="96" y="212.28">what is a programming language?</tspan></text>
     <rect x="72" y="490" width="1776" height="256" fill="black" stroke="#D76767" stroke-opacity="0.3" stroke-width="5" stroke-dasharray="20 20"/>
@@ -25,19 +29,17 @@
     <text fill="white" style="white-space: pre" xml:space="preserve" font-family="JetBrains Mono" font-size="48" letter-spacing="-0.02em"><tspan x="96" y="380.28">Programming languages allow us to instruct computers </tspan><tspan x="96" y="438.28">what to do - they allow us to “talk” to computers.</tspan></text>
     <text fill="white" style="white-space: pre" xml:space="preserve" font-family="JetBrains Mono" font-size="48" letter-spacing="-0.02em"><tspan x="96" y="832.28">Code is human-readable, so for the computer to actually </tspan><tspan x="96" y="890.28">understand them, it has to be compiled into machine </tspan><tspan x="96" y="948.28">code.</tspan></text>
     <rect x="128" y="618" width="554" height="69" rx="20" fill="#1A1510"/>
+    <foreignObject x="128" y="580" width="554" height="100">
+        <pre><code class="language-typescript">print("Hello, world!");</code></pre>
+    </foreignObject>
     <defs>
-    <radialGradient id="paint0_radial_10783_86" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(739.5 -236.5) rotate(80.4918) scale(1334.84 2373.05)">
-    <stop stop-color="#653B12"/>
-    <stop offset="1"/>
-    </radialGradient>
     </defs>
     </svg>
 </div>
 
-<div>
+<div #machineCode data-accent="#D1D1D1">
     <svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080" viewBox="0 0 1920 1080" fill="none">
     <g clip-path="url(#clip0_10783_519)">
-    <rect width="1920" height="1080" fill="url(#paint0_linear_10783_519)"/>
     <text fill="#D1D1D1" style="white-space: pre" xml:space="preserve" font-family="IBM Plex Mono" font-size="96" font-weight="bold" letter-spacing="-0.02em"><tspan x="100" y="150.5">Machine code</tspan></text>
     <text fill="#919191" style="white-space: pre" xml:space="preserve" font-family="IBM Plex Mono" font-size="40" letter-spacing="-0.02em"><tspan x="100" y="198">the thing CPUs actually understand</tspan></text>
     <rect x="159" y="841" width="215" height="63" fill="#929292" fill-opacity="0.25"/>
@@ -56,10 +58,6 @@
     </tspan><tspan x="100" y="642.78">All code gets converted to machine code </tspan><tspan x="100" y="695.78">at some point (in a process we call </tspan><tspan x="100" y="748.78">compilation).</tspan></text>
     </g>
     <defs>
-    <linearGradient id="paint0_linear_10783_519" x1="960" y1="0" x2="960" y2="1080" gradientUnits="userSpaceOnUse">
-    <stop stop-color="#212121"/>
-    <stop offset="1"/>
-    </linearGradient>
     <clipPath id="clip0_10783_519">
     <rect width="1920" height="1080" fill="white"/>
     </clipPath>
@@ -67,9 +65,8 @@
     </svg>
 </div>
 
-<div>
+<div #compilation data-accent="#29BEC8">
     <svg width="1920" height="1080" viewBox="0 0 1920 1080" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <rect width="1920" height="1080" fill="url(#paint0_linear_10784_659)"/>
     <text fill="#29BEC8" style="white-space: pre" xml:space="preserve" font-family="IBM Plex Mono" font-size="96" font-weight="bold" letter-spacing="-0.02em"><tspan x="100" y="150.5">Compilation</tspan></text>
     <text fill="#238C93" style="white-space: pre" xml:space="preserve" font-family="IBM Plex Mono" font-size="40" letter-spacing="-0.02em"><tspan x="100" y="198">how do we get that that machine code</tspan></text>
     <rect x="80" y="698" width="264" height="63" fill="#197B8F" fill-opacity="0.25"/>
@@ -90,6 +87,9 @@
     <rect x="203.5" y="376.5" width="439" height="74" rx="22.5" fill="#10151A"/>
     <rect x="203.5" y="376.5" width="439" height="74" rx="22.5" stroke="#515151" stroke-width="5"/>
     </g>
+    <foreignObject x="210" y="340" width="554" height="100">
+        <pre><code class="language-typescript">var x = 10 + 10;</code></pre>
+    </foreignObject>
     <g filter="url(#filter2_d_10784_659)">
     <text fill="#EEEEEE" fill-opacity="0.5" style="white-space: pre" xml:space="preserve" font-family="Epilogue" font-size="25.7857" font-weight="300" letter-spacing="-0.03em"><tspan x="1303" y="595.017">Machine code</tspan></text>
     <rect x="1301" y="264" width="269" height="290" rx="22" fill="black" stroke="#515151" stroke-width="4"/>
@@ -132,10 +132,6 @@
     <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_10784_659"/>
     <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_10784_659" result="shape"/>
     </filter>
-    <linearGradient id="paint0_linear_10784_659" x1="689" y1="-1.35656e-05" x2="949.5" y2="1013" gradientUnits="userSpaceOnUse">
-    <stop stop-color="#11323A"/>
-    <stop offset="1"/>
-    </linearGradient>
     <radialGradient id="paint1_radial_10784_659" cx="0" cy="0" r="1" gradientTransform="matrix(39.9331 298.145 -262.747 4.04152 1361.71 253.855)" gradientUnits="userSpaceOnUse">
     <stop stop-color="white"/>
     <stop offset="1" stop-color="#999999" stop-opacity="0"/>
@@ -153,9 +149,8 @@
     </svg>
 </div>
 
-<div>
+<div data-accent="#F0A860">
     <svg width="1920" height="1080" viewBox="0 0 1920 1080" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <rect width="1920" height="1080" fill="url(#paint0_radial_10783_214)"/>
     <text fill="#F0A860" style="white-space: pre" xml:space="preserve" font-family="JetBrains Mono" font-size="96" font-weight="800" letter-spacing="-0.02em"><tspan x="96" y="160.06">Kinds &#38; their use</tspan></text>
     <text fill="#894A0A" style="white-space: pre" xml:space="preserve" font-family="JetBrains Mono" font-size="48" letter-spacing="-0.02em"><tspan x="96" y="209.28">what kinds of languages do we have?</tspan></text>
     <rect x="85" y="280" width="551" height="708" fill="black" stroke="#D76767" stroke-opacity="0.3" stroke-width="5" stroke-dasharray="20 20"/>
@@ -178,17 +173,12 @@
     <text fill="white" style="white-space: pre" xml:space="preserve" font-family="JetBrains Mono" font-size="36" letter-spacing="-0.02em"><tspan x="1340" y="426.46">These languages don&#x2019;t </tspan><tspan x="1340" y="469.46">compile, but get </tspan><tspan x="1340" y="512.46">interpreted at </tspan><tspan x="1340" y="555.46">runtime.&#10;</tspan><tspan x="1340" y="598.46">&#10;</tspan><tspan x="1340" y="641.46">Example: ShellScript</tspan></text>
     <path d="M594.688 934.406V929.093H589.109C588.844 927.5 588.047 925.906 587.25 924.312L591.234 920.328L587.516 916.609L583.531 920.593C582.203 919.796 580.609 919 578.75 918.734V913.156H573.438V918.734C571.844 919 570.25 919.796 568.656 920.593L564.672 916.609L560.953 920.328L564.937 924.312C564.141 925.64 563.344 927.234 563.078 929.093H557.5V934.406H563.078C563.344 936 564.141 937.593 564.937 939.187L560.953 943.171L564.672 946.89L568.656 942.906C569.984 943.703 571.578 944.5 573.438 944.765V950.343H578.75V944.765C580.344 944.5 581.937 943.703 583.531 942.906L587.516 946.89L591.234 943.171L587.25 939.187C588.047 937.859 588.844 936.265 589.109 934.406H594.688ZM576.094 939.718C571.578 939.718 568.125 936.265 568.125 931.75C568.125 927.234 571.578 923.781 576.094 923.781C580.609 923.781 584.062 927.234 584.062 931.75C584.062 936.265 580.609 939.718 576.094 939.718ZM572.07 886.928L548.163 873.647C547.769 873.428 547.326 873.313 546.875 873.313C546.424 873.313 545.981 873.428 545.587 873.647L521.68 886.928C521.266 887.158 520.921 887.494 520.68 887.902C520.44 888.311 520.313 888.776 520.313 889.25V915.812C520.312 916.286 520.439 916.751 520.679 917.159C520.919 917.567 521.264 917.904 521.678 918.134L545.584 931.415C545.988 931.64 546.444 931.755 546.907 931.75C547.37 931.744 547.823 931.618 548.222 931.383C548.62 931.149 548.951 930.814 549.181 930.412C549.41 930.011 549.531 929.556 549.531 929.093V904.093L568.125 893.765V905.187H573.438V889.25C573.437 888.776 573.31 888.311 573.07 887.902C572.829 887.494 572.484 887.158 572.07 886.928ZM546.875 879.007L565.312 889.25L546.875 899.492L528.441 889.25L546.875 879.007ZM525.625 914.248V893.765L544.219 904.098V924.578L525.625 914.248Z" fill="#999999"/>
     <defs>
-    <radialGradient id="paint0_radial_10783_214" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(739.5 -236.5) rotate(80.4918) scale(1334.84 2373.05)">
-    <stop stop-color="#4F2B07"/>
-    <stop offset="1"/>
-    </radialGradient>
     </defs>
     </svg>
 </div>
 
-<div>
+<div data-accent="#F0A860">
     <svg width="1920" height="1080" viewBox="0 0 1920 1080" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <rect width="1920" height="1080" fill="url(#paint0_radial_10787_50)"/>
     <text fill="#F0A860" style="white-space: pre" xml:space="preserve" font-family="JetBrains Mono" font-size="96" font-weight="800" letter-spacing="-0.02em"><tspan x="96" y="160.06">Advantages/Disadvantages</tspan></text>
     <rect x="67" y="205" width="551" height="770" fill="black" stroke="#D76767" stroke-opacity="0.3" stroke-width="5" stroke-dasharray="20 20"/>
     <text fill="white" style="white-space: pre" xml:space="preserve" font-family="JetBrains Mono" font-size="64" font-weight="bold" letter-spacing="-0.02em"><tspan x="193.728" y="309.972">Compiled</tspan></text>
@@ -206,17 +196,12 @@
     <rect x="696" y="637" width="304" height="44" fill="#523327"/>
     <text fill="white" style="white-space: pre" xml:space="preserve" font-family="JetBrains Mono" font-size="36" letter-spacing="-0.02em"><tspan x="708" y="412.46">Advantages:&#10;</tspan><tspan x="750.48" y="455.46">Easy debugging&#10;</tspan><tspan x="750.48" y="498.46">Runtime features&#10;</tspan><tspan x="750.48" y="541.46">Runs anywhere the </tspan><tspan x="750.48" y="584.46">runtime does&#10;</tspan><tspan x="708" y="627.46">&#10;</tspan><tspan x="708" y="670.46">Disadvantages:&#10;</tspan><tspan x="750.48" y="713.46">Slow&#10;</tspan><tspan x="750.48" y="756.46">Requires a runtime&#10;</tspan><tspan x="750.48" y="799.46">Source code is </tspan><tspan x="750.48" y="842.46">needed</tspan></text>
     <defs>
-    <radialGradient id="paint0_radial_10787_50" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(739.5 -236.5) rotate(80.4918) scale(1334.84 2373.05)">
-    <stop stop-color="#4F2B07"/>
-    <stop offset="1"/>
-    </radialGradient>
     </defs>
     </svg>
 </div>
 
-<div>
+<div data-accent="#F0A860">
     <svg width="1920" height="1080" viewBox="0 0 1920 1080" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <rect width="1920" height="1080" fill="url(#paint0_radial_10783_411)"/>
     <text fill="#F0A860" style="white-space: pre" xml:space="preserve" font-family="JetBrains Mono" font-size="96" font-weight="800" letter-spacing="-0.02em"><tspan x="96" y="160.06">Low/High level languages</tspan></text>
     <rect x="96" y="697" width="286" height="63" fill="#8F5E19" fill-opacity="0.25"/>
     <rect x="904" y="697" width="305" height="63" fill="#8F5E19" fill-opacity="0.25"/>
@@ -226,18 +211,14 @@
     <text fill="#DFB07A" style="white-space: pre" xml:space="preserve" font-family="IBM Plex Mono" font-size="48" font-weight="600" letter-spacing="-0.03em"><tspan x="920" y="747.5">High-level</tspan></text>
     <text fill="white" style="white-space: pre" xml:space="preserve" font-family="JetBrains Mono" font-size="48" letter-spacing="-0.02em"><tspan x="96" y="263.28">Programming languages are also categorized based on how </tspan><tspan x="96" y="321.28">close to the hardware they operate.&#10;</tspan><tspan x="96" y="379.28">&#10;</tspan><tspan x="96" y="437.28">The lowest level &#x201c;language&#x201d; would be Assembly - it maps </tspan><tspan x="96" y="495.28">to machine code nearly one-to-one.&#10;</tspan><tspan x="96" y="553.28">&#10;</tspan><tspan x="96" y="611.28">A high level language would be something like Python.</tspan></text>
     <defs>
-    <radialGradient id="paint0_radial_10783_411" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(739.5 -236.5) rotate(80.4918) scale(1334.84 2373.05)">
-    <stop stop-color="#241404"/>
-    <stop offset="1"/>
-    </radialGradient>
     </defs>
     </svg>
 </div>
 
-<div>
+<div #notables data-accent="#B5F593">
     <svg width="1920" height="1080" viewBox="0 0 1920 1080" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     <g clip-path="url(#clip0_10783_258)">
-    <rect width="1920" height="1080" fill="url(#paint0_radial_10783_258)"/>
+    <rect width="1920" height="1080" fill="#0008"/>
     <rect x="-39" y="-6" width="1959" height="1120" fill="url(#pattern0_10783_258)" fill-opacity="0.2"/>
     <text fill="#B5F593" style="white-space: pre" xml:space="preserve" font-family="JetBrains Mono" font-size="96" font-weight="800" letter-spacing="-0.02em"><tspan x="133" y="161.06">Notable programming languages</tspan></text>
     <text fill="#C6F8C4" style="white-space: pre" xml:space="preserve" font-family="JetBrains Mono" font-size="64" font-weight="bold" letter-spacing="-0.02em"><tspan x="323" y="338.54">JavaScript</tspan></text>
@@ -269,24 +250,19 @@
     <pattern id="pattern0_10783_258" patternContentUnits="objectBoundingBox" width="1" height="1">
     <use xlink:href="#image0_10783_258" transform="matrix(0.000976562 0 0 0.00170811 0 -0.374554)"/>
     </pattern>
-    <radialGradient id="paint0_radial_10783_258" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(739.5 -236.5) rotate(80.4918) scale(1334.84 2373.05)">
-    <stop stop-color="#042408"/>
-    <stop offset="1"/>
-    </radialGradient>
     <clipPath id="clip0_10783_258">
     <rect width="1920" height="1080" fill="white"/>
     </clipPath>
     <clipPath id="clip1_10783_258">
     <rect width="160" height="160" fill="white" transform="translate(117 768)"/>
     </clipPath>
-    <image id="image0_10783_258" width="1024" height="1024" preserveAspectRatio="none" xlink:href="/programming-languages/assets/waves.png"/>
     </defs>
     </svg>
+    <canvas #waves></canvas>
 </div>
 
-<div>
+<div data-accent="#C760F0">
     <svg width="1920" height="1080" viewBox="0 0 1920 1080" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <rect width="1920" height="1080" fill="url(#paint0_radial_10783_155)"/>
     <text fill="#C760F0" style="white-space: pre" xml:space="preserve" font-family="JetBrains Mono" font-size="96" font-weight="800" letter-spacing="-0.02em"><tspan x="96" y="160.06">Glitter</tspan></text>
     <text fill="#B06CEB" style="white-space: pre" xml:space="preserve" font-family="JetBrains Mono" font-size="48" letter-spacing="-0.02em"><tspan x="96" y="699.28">I made this one :)</tspan></text>
     <path d="M1393.95 298.45H1771.05V407.39C1771.05 435.159 1748.54 457.67 1720.77 457.67H1444.23C1416.46 457.67 1393.95 435.159 1393.95 407.39V298.45Z" fill="#005589"/>
@@ -300,10 +276,6 @@
     <text fill="#DA69EB" style="white-space: pre" xml:space="preserve" font-family="IBM Plex Mono" font-size="37.7566" font-weight="600" letter-spacing="-0.03em"><tspan x="1483.7" y="525.936">Open-Source</tspan></text>
     <path d="M1450.63 523.871L1452.81 514.431L1445.49 508.082L1455.16 507.242L1458.92 498.34L1462.69 507.242L1472.36 508.082L1465.04 514.431L1467.22 523.871L1458.92 518.866L1450.63 523.871Z" fill="#DA69EB"/>
     <defs>
-    <radialGradient id="paint0_radial_10783_155" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(739.5 -236.5) rotate(80.4918) scale(1334.84 2373.05)">
-    <stop stop-color="#190424"/>
-    <stop offset="1"/>
-    </radialGradient>
     <linearGradient id="paint1_linear_10783_155" x1="1802.48" y1="410.367" x2="1354.15" y2="410.367" gradientUnits="userSpaceOnUse">
     <stop stop-color="#2B023E"/>
     <stop offset="0.145131" stop-color="#7006A1"/>
@@ -316,9 +288,8 @@
     </svg>
 </div>
 
-<div>
+<div data-accent="#198F51">
     <svg width="1920" height="1080" viewBox="0 0 1920 1080" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <rect width="1920" height="1080" fill="url(#paint0_radial_10783_460)"/>
     <rect x="187" y="144" width="1546" height="156" fill="#198F51" fill-opacity="0.25"/>
     <text fill="#198F51" style="white-space: pre" xml:space="preserve" font-family="IBM Plex Mono" font-size="97.2467" font-weight="600" letter-spacing="-0.03em"><tspan x="259.936" y="258.468">Thanks for your attention</tspan></text>
     <text fill="#21BB6A" style="white-space: pre" xml:space="preserve" font-family="IBM Plex Mono" font-size="48" font-style="italic" font-weight="200" letter-spacing="-0.03em"><tspan x="187" y="717.5">Sources &#38; credits:</tspan></text>
@@ -331,35 +302,114 @@
     <path fill-rule="evenodd" clip-rule="evenodd" d="M273.338 828.126C264.001 827.054 256.75 819.124 256.75 809.5C256.75 799.144 265.144 790.75 275.5 790.75C285.856 790.75 294.25 799.144 294.25 809.5C294.25 819.169 288.094 818.374 282.839 817.694C279.805 817.302 277.073 816.949 275.991 818.665C275.251 819.839 276.051 821.301 277.032 822.282C277.323 822.573 277.554 822.919 277.712 823.3C277.87 823.68 277.951 824.088 277.951 824.5C277.951 824.912 277.87 825.32 277.712 825.7C277.554 826.081 277.323 826.427 277.032 826.718C276.051 827.699 274.716 828.286 273.338 828.126ZM273.784 800.125C273.784 800.871 273.488 801.586 272.961 802.114C272.433 802.641 271.718 802.938 270.972 802.938C270.226 802.938 269.511 802.641 268.983 802.114C268.456 801.586 268.159 800.871 268.159 800.125C268.159 799.379 268.456 798.664 268.983 798.136C269.511 797.609 270.226 797.312 270.972 797.312C271.718 797.312 272.433 797.609 272.961 798.136C273.488 798.664 273.784 799.379 273.784 800.125ZM265.188 811.375C265.933 811.375 266.649 811.079 267.176 810.551C267.704 810.024 268 809.308 268 808.562C268 807.817 267.704 807.101 267.176 806.574C266.649 806.046 265.933 805.75 265.188 805.75C264.442 805.75 263.726 806.046 263.199 806.574C262.671 807.101 262.375 807.817 262.375 808.562C262.375 809.308 262.671 810.024 263.199 810.551C263.726 811.079 264.442 811.375 265.188 811.375ZM285.812 811.375C286.558 811.375 287.274 811.079 287.801 810.551C288.329 810.024 288.625 809.308 288.625 808.562C288.625 807.817 288.329 807.101 287.801 806.574C287.274 806.046 286.558 805.75 285.812 805.75C285.067 805.75 284.351 806.046 283.824 806.574C283.296 807.101 283 807.817 283 808.562C283 809.308 283.296 810.024 283.824 810.551C284.351 811.079 285.067 811.375 285.812 811.375ZM280.188 802.938C280.557 802.938 280.923 802.865 281.264 802.723C281.605 802.582 281.915 802.375 282.176 802.114C282.437 801.853 282.645 801.543 282.786 801.201C282.927 800.86 283 800.494 283 800.125C283 799.756 282.927 799.39 282.786 799.049C282.645 798.707 282.437 798.397 282.176 798.136C281.915 797.875 281.605 797.668 281.264 797.527C280.923 797.385 280.557 797.312 280.188 797.312C279.442 797.312 278.726 797.609 278.199 798.136C277.671 798.664 277.375 799.379 277.375 800.125C277.375 800.871 277.671 801.586 278.199 802.114C278.726 802.641 279.442 802.938 280.188 802.938Z" fill="#198F51"/>
     <path d="M286.75 948.25C287.745 948.25 288.698 947.855 289.402 947.152C290.105 946.448 290.5 945.495 290.5 944.5V914.5C290.5 913.505 290.105 912.552 289.402 911.848C288.698 911.145 287.745 910.75 286.75 910.75H275.5V923.875L270.812 921.062L266.125 923.875V910.75H264.25C263.255 910.75 262.302 911.145 261.598 911.848C260.895 912.552 260.5 913.505 260.5 914.5V944.5C260.5 945.495 260.895 946.448 261.598 947.152C262.302 947.855 263.255 948.25 264.25 948.25H286.75Z" fill="#198F51"/>
     <defs>
-    <radialGradient id="paint0_radial_10783_460" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(739.5 -236.5) rotate(80.4918) scale(1334.84 2373.05)">
-    <stop stop-color="#042408"/>
-    <stop offset="1"/>
-    </radialGradient>
     </defs>
     </svg>
 </div>
 
+<canvas #gradient-background></canvas>
+
 <script>
     const presentation = init();
 
+    const waves = new CombinedShaderRenderer(document.querySelector('#waves'));
+    const FRAMERATE = 24;
+    waves.limitFPS(FRAMERATE);
+    waves.addShaderContext(ShaderSource.waves(waves.gl), {
+        u_time: { type: "uniform1f", value: time => [(time * 0.001) + 0.15] },
+        u_resolution: { type: "uniform2f", value: [512, 512] },
+        u_speed: { type: "uniform1f", value: [.1] },
+        u_scale: { type: "uniform1f", value: [.8] },
+        u_background: { type: "uniform4fv", value: [[0, 0, 0, 1]] },
+        u_color: { type: "uniform4fv", value: [[0, 1, 0.01568627450980392, 1]] },
+        u_phase: { type: "uniform1f", value: [.5] },
+        u_brightness: { type: "uniform1f", value: [1] }
+    });
+
+    const bgCanvas = document.querySelector('#gradient-background');
+    let bgColors = [0.25098039215686274,0.7529411764705882,0.9058823529411765,1,0.9882352941176471,0.7607843137254902,0.10588235294117647,1,0.9294117647058824,0.4235294117647059,0.18823529411764706,1,0,0,0,0];
+
+    const animatedGradient = new CombinedShaderRenderer(bgCanvas);
+    animatedGradient.limitFPS(FRAMERATE);
+    animatedGradient.addShaderContext(ShaderSource.blurredColors(animatedGradient.gl), {
+        u_time: { type: "uniform1f", value: time => [(time * 0.001) + 1000] },
+        u_resolution: { type: "uniform2f", value: [512, 512] },
+        u_speed: { type: "uniform1f", value: [0.196] },
+        u_scale: { type: "uniform1f", value: [4] },
+        u_colors: { type: "uniform4fv", value: () => [bgColors] },
+        u_blur: { type: "uniform1f", value: [1] },
+        u_animate: { type: "uniform1f", value: [1] },
+        u_animate_speed: { type: "uniform1f", value: [1] },
+        u_frequency: { type: "uniform1f", value: [0] },
+        alpha: { type: "uniform1f", value: [0.25] },
+    });
+
+    presentation.content.appendChild(bgCanvas);
+
+    presentation.on("ready", () => {
+        hljs.highlightAll();
+
+        for(let code of document.querySelectorAll(".hljs")) {
+            // Convert text nodes to spans
+            for(let node of code.childNodes) {
+                if(node.nodeType === Node.TEXT_NODE) {
+                    let span = document.createElement("span");
+                    span.textContent = node.textContent;
+                    node.replaceWith(span);
+                }
+            }
+        }
+
+        for(let slide of document.querySelectorAll("[data-accent]")) {
+            // Compute bgColor
+            const color = (new LS.Color(slide.dataset.accent).pixel.map(c => c/255));
+            slide.bgColors = [...color, ...color, ...color, 0,0,0,0];
+        }
+
+        animatedGradient.start();
+    });
+
     presentation.on("changed", (newTab, oldTab, state) => {
+        if(newTab.id === "notables") {
+            waves.start();
+        } else {
+            waves.stop();
+        }
+
         if(state.initial) return;
 
-        presentation.animate(newTab.element, [
-            { opacity: 0, transform: "scale(0.95)" },
-            { opacity: 1, transform: "scale(1)" }
-        ], {
-            duration: 450,
-            easing: Presentation.SPRING
-        });
+        if(newTab.element.bgColors) {
+            bgColors = newTab.element.bgColors;
+        }
 
-        if(oldTab) presentation.leaving(oldTab.element, [
-            { opacity: 1, transform: "scale(1)" },
-            { opacity: 0, transform: "scale(0.95)" }
-        ], {
-            duration: 450,
-            easing: Presentation.SPRING
-        });
+        switch(true) {
+            case (state.index === 1):
+                if(oldTab) presentation.leaving(oldTab.element, [
+                   { opacity: 1, transform: "translateY(0)", zIndex: 1, borderRadius: "0", offset: 0 },
+                   { opacity: 1, transform: "translateY(-15px) translateX(40px) rotate(5deg)", zIndex: 1, borderRadius: "20px", offset: 0.08 },
+                   { opacity: 0, transform: "translateY(800px) translateX(150px) rotate(20deg)", zIndex: 1, borderRadius: "100px", offset: 1 }
+                ], {
+                    duration: 650,
+                    easing: "ease-in-out"
+                });
+                break;
+
+            default:
+                if(oldTab) presentation.leaving(oldTab.element, [
+                    { opacity: 1, transform: "scale(1)" },
+                    { opacity: 0, transform: "scale(0.95)" }
+                ], {
+                    duration: 450,
+                    easing: Presentation.SPRING
+                });
+
+                presentation.animate(newTab.element, [
+                    { opacity: 0, transform: "scale(0.95)" },
+                    { opacity: 1, transform: "scale(1)" }
+                ], {
+                    duration: 450,
+                    easing: Presentation.SPRING
+                });
+        }
 
         presentation.animate(".gear", [
             { transform: "rotate(0deg)" },
@@ -367,6 +417,16 @@
         ], {
             duration: 4000,
             iterations: Infinity,
+            easing: Presentation.SPRING
+        });
+
+        presentation.animate(".hljs > *", [
+            { opacity: 0, transform: "translateX(-10px)" },
+            { opacity: 1, transform: "translateX(0)" }
+        ], {
+            duration: 450,
+            staggering: 150,
+            fill: "forwards",
             easing: Presentation.SPRING
         });
     });
@@ -380,5 +440,30 @@
     .gear {
         transform-origin: center center;
         transform-box: border-box;
+    }
+
+    .hljs {
+        color: unset !important;
+        background: unset !important;
+        font-size: xx-large;
+    }
+
+    .hljs > * {
+        display: inline-block;
+        opacity: 0;
+    }
+
+    .presentation-content {
+        overflow: hidden;
+        background: transparent !important;
+    }
+
+    canvas {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+        object-fit: cover;
     }
 </style>

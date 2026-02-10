@@ -22,13 +22,13 @@
 
                 this.tabs = new LS.Tabs(this.content, {
                     list: false,
-                    styled: false,
-                    hasTransitions: true
+                    styled: false
                 });
 
                 this.options = LS.Util.defaults({
                     resolution: [1920, 1080],
                     globalEvents: true,
+                    hasTransitions: true,
                     loop: false // If true, it'l loop around infinitely
                 }, options);
 
@@ -55,6 +55,7 @@
                     const oldTab = this.tabs.tabs.get(oldTabId);
 
                     const index = this.index;
+                    const oldIndex = lastIndex;
                     const direction = lastIndex < index ? 1 : -1;
                     lastIndex = index;
 
@@ -71,16 +72,17 @@
                         left.style.display = "";
                     }
 
-                    this.emit("changed", [newTab, oldTab, { initial, direction }]);
+                    this.emit("changed", [newTab, oldTab, { initial, direction, index, oldIndex }]);
                     initial = false;
                 });
 
+                this.evh = this.handleEvent.bind(this);
                 if(this.options.globalEvents) {
-                    window.addEventListener("keydown", this.handleEvent.bind(this));
-                    window.addEventListener("wheel", this.handleEvent.bind(this));
+                    window.addEventListener("keydown", this.evh);
+                    window.addEventListener("wheel", this.evh);
                 }
 
-                this.container.addEventListener("click", this.handleEvent.bind(this));
+                this.container.addEventListener("click", this.evh);
             }
             
             static SPRING = 'linear(0, 0.0018, 0.007 1.17%, 0.0334, 0.0758, 0.1306 5.54%, 0.2505 8.16%, 0.6477 16.03%, 0.7622 18.65%, 0.8498, 0.9229 23.32%, 0.9878 25.94%, 1.0308 28.27%, 1.0643 30.9%, 1.0791, 1.0886 34.39%, 1.094, 1.0944 38.48%, 1.0903 40.81%, 1.0814 43.43%, 1.0362 53.05%, 1.0184 57.42%, 1.0059, 0.9976 65.58%, 0.9925 70.25%, 0.991 75.79%, 0.9996 99.98%)';
@@ -125,7 +127,11 @@
                         break;
 
                     case "click":
-                        this.tabs.next();
+                        if(event.clientX < window.innerWidth / 2) {
+                            this.tabs.previous(this.options.loop);
+                        } else {
+                            this.tabs.next(this.options.loop);
+                        }
                         break;
 
                     // Add more cases as needed
@@ -182,6 +188,8 @@
              * Helper for animations.
             */
             animate(target, keyframes, options) {
+                if(!target) return;
+
                 if(typeof target === "string" || Array.isArray(target)) {
                     const array = Array.isArray(target)? target: presentation.tabs.currentElement()?.querySelectorAll(target);
                     if(array && array.length) {
@@ -256,6 +264,11 @@
                 this.tabs = null;
                 this.resizeObserver = null;
                 this.destroyed = true;
+
+                window.removeEventListener("keydown", this.evh);
+                window.removeEventListener("wheel", this.evh);
+                this.container.removeEventListener("click", this.evh);
+
                 // TODO: destroy event handlers & stuff
             }
         }
