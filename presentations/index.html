@@ -4,20 +4,117 @@
 <!-- Styles and scripts can be added here as usuall. A <head> element is supported as well, which will extend the template's head (to some degree). -->
 
 <script>
-    window.PRESENTATION_META = {
+    const presentation = init({
         // Lower resolution to make the content larger
         resolution: [1270, 720]
-    }
+    });
+
+    presentation.on("ready", () => {
+        // Presentation is ready
+
+        Presentation.splitLetters(document.querySelector("#splitLettersThing"), "letter");
+    });
+
+    presentation.on("changed", (newTab, oldTab) => {
+
+        // Yeah, adding transitions is this simple
+        // This can be pretty much any kind of transition you want
+
+        // You can animate any kind of object here too
+        // Animations are cancelled and reset when the slide changes.
+
+        presentation.animate(newTab.element, [
+            { opacity: 0, transform: "scale(0.95)" },
+            { opacity: 1, transform: "scale(1)" }
+        ], {
+            duration: 450,
+            easing: Presentation.SPRING
+        });
+
+        if(oldTab) presentation.leaving(oldTab.element, [
+            { opacity: 1, transform: "scale(1)" },
+            { opacity: 0, transform: "scale(0.95)" }
+        ], {
+            duration: 450,
+            easing: Presentation.SPRING
+        });
+
+        presentation.animate(".someSpinningThing", [
+            { transform: "rotate(0deg)" },
+            { transform: "rotate(360deg)" }
+        ], {
+            duration: 2000,
+            iterations: Infinity,
+            easing: Presentation.SPRING
+        });
+
+        presentation.animate(".letter", [
+            { opacity: 0, transform: "translateY(20px)" },
+            { opacity: 1, transform: "translateY(0)" }
+        ], {
+            duration: 500,
+            staggering: 50,
+            easing: Presentation.SPRING
+        });
+
+        if(newTab.id === "animatedBackground") {
+            presentation.animate(presentation.content, [
+                { background: "var(--accent-20)" },
+            ], {
+                duration: 1000,
+                easing: "ease",
+                fill: "forwards"
+            });
+
+            presentation.animate(newTab.element, [
+                { transform: "scale(1)" },
+                { transform: "scale(1.2) skew(5deg, -5deg)" }
+            ], {
+                duration: 450,
+                delay: 250,
+                easing: Presentation.SPRING,
+                fill: "forwards"
+            });
+
+            // Particles
+            const particles = newTab.element.querySelector(".particles");
+            particles.innerHTML = "";
+
+            for(let i = 0; i < 30; i++) {
+                const particle = LS.Create({ class: "particle" });
+
+                const size = Math.random() * 20 + 5;
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                particle.style.top = `${Math.random() * 100}%`;
+                particle.style.left = `${Math.random() * 100}%`;
+                particle.style.opacity = Math.random() * 0.3;
+
+                particles.appendChild(particle);
+
+                presentation.animate(particle, [
+                    { transform: "translate(0, 0)" },
+                    { transform: `translate(${Math.random() * 400 - 200}px, ${Math.random() * 400 - 200}px)`}
+                ], {
+                    duration: 5000 + Math.random() * 5000,
+                    iterations: Infinity,
+                    direction: "alternate",
+                    easing: "ease-in-out"
+                });
+            }
+        }
+    });
 </script>
 
 <div #firstSlide .hello>
     <img src="/assets/icon.svg" alt="Presentation Icon">
 
-    <h1>Welcome to slides.lstv.space</h1>
-    <span>
-        Here I host various presentations I made mostly for school with my own presentation framework.
-        It's quite simple thanks to my backend and frontend frameworks (Akeno and LS). Each presentation is just a simple HTML file that includes the template.<br>
-        It directly supports *markdown* and animations & transitions are basically free. It's probably the most flexible way to make presentations if you are a developer :) <br>
+    <h1>Welcome to LS Slides</h1>
+    <span .yap>
+        I mostly host school presentations here with my own presentation framework.<br>
+        It's a simple and very lightweight presentation tool built with my backend and frontend frameworks (Akeno and LS).<br><br>
+        Each presentation is just a simple HTML file, yet it's quite powerful.<br>
+        It's probably the most flexible way to make presentations if you are a developer :) <br>
     </span>
 
     <div>
@@ -26,8 +123,19 @@
     </div>
 </div>
 
-<div .hello>
-    Second slide lol
+<div .hello #animatedBackground>
+    <div .particles />
+    <h1 .someSpinningThing>👋</h1>
+    <h2 #splitLettersThing>You can animate anything!</h2>
+    In any way. And it's pretty simple, too.<br>
+    With hardware acceleration :P
+</div>
+
+<div .hello ls-accent="purple" ls-theme="light" .level-0>
+    <div>
+        With LS Slides, you get the full power of <strong>HTML, CSS, JS, SVG, Markdown</strong>, you name it.<br>
+        Thanks to LS, it also supports dynamic light/dark schema and <span style="color:var(--accent)">accents</span> (well, sorry for the flashbang 😅).<br>
+    </div>
 </div>
 
 <style>
@@ -41,8 +149,45 @@
 
         gap: 20px;
 
-        span {
+        .yap {
             width: 800px;
         }
+    }
+
+    h2 {
+        margin: 0;
+    }
+
+    .someSpinningThing {
+        font-size: 3em;
+    }
+
+    #splitLettersThing {
+        white-space: pre-wrap;
+
+        .letter {
+            display: inline-block;
+        }
+    }
+
+    .presentation-content {
+        /* We want this here so particles don't spill out */
+        overflow: hidden;
+    }
+
+    .particles {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        z-index: -1;
+        overflow: hidden;
+    }
+
+    .particle {
+        position: absolute;
+        background: var(--base-98);
+        border-radius: 50%;
     }
 </style>

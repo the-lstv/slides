@@ -41,3 +41,28 @@
 <div>
     yes
 </div>
+
+<script>
+    const presentation = init();
+
+    presentation.on("changed", (newTab, oldTab) => {
+        console.log("Slide changed from", oldTab ? oldTab.id : null, "to", newTab.id);
+
+        presentation.animate(newTab.element, [
+            { opacity: 0, transform: "scale(0.95)" },
+            { opacity: 1, transform: "scale(1)" }
+        ], {
+            duration: 450,
+            easing: Presentation.SPRING
+        });
+
+        if(oldTab) presentation.leaving(oldTab.element, [
+            { opacity: 1, transform: "scale(1)" },
+            { opacity: 0, transform: "scale(0.95)" }
+        ], {
+            duration: 450,
+            easing: Presentation.SPRING
+        });
+    });
+    
+</script>

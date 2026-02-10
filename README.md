@@ -2,7 +2,10 @@
 
 # slides
 
-Simple presentation framework I made for my school presentations. Note that this is a personal project that I am just leaving open to anyone who likes it; it is not a released product.
+Simple presentation framework I made for my school presentations.
+
+> [!NOTE]
+> This is a personal project that I am just leaving open to anyone who likes it; it is not a released product.
 
 It allows you to make presentations with code easily and publish them instantly. It's very lightweight, yet very flexible.
 
