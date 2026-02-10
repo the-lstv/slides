@@ -1,0 +1,37 @@
+#template /assets/presentation.html
+
+<script>
+    window.PRESENTATION_META = {
+        resolution: [1270, 720]
+    }
+</script>
+
+<div markdown .hello>
+    <img src="/assets/icon.svg" alt="Presentation Icon">
+
+    # Welcome to slides.lstv.space
+    <span>
+        Here I host various presentations I made mostly for school with my own presentation framework.
+        It's quite simple thanks to my backend and frontend frameworks (Akeno and LS). Each presentation is just a simple HTML file that includes the template.<br>
+        It directly supports *markdown* and animations & transitions are basically free. It's the most flexible way to make presentations if you are a developer :) <br>
+    </span>
+
+    <button class="pill margin-top-xlarge">Get Started</button>
+</div>
+
+<style>
+    .hello {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        height: 100%;
+        flex-direction: column;
+
+        gap: 20px;
+
+        span {
+            width: 800px;
+        }
+    }
+</style>

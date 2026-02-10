@@ -1,0 +1,220 @@
+<head>
+    @use(ls:5.2.8[flat, tabs]);
+    @use(google-fonts["JetBrains Mono"]);
+
+    @page font: "JetBrains Mono";
+</head>
+
+<body ls ls-style="flat" ls-theme="dark" .level-0 state="loading">
+    <div #initial-slides hidden>
+        <template::content />
+    </div>
+
+    <script>
+        const presentation = new class Presentation extends LS.EventEmitter {
+            constructor(options) {
+                super();
+
+                this.container = LS.Create();
+                this.viewport = LS.Create().addTo(this.container);
+                this.content = LS.Create().addTo(this.viewport);
+
+                this.container.classList.add("presentation-container");
+                this.content.classList.add("presentation-content");
+                this.content.classList.add("level-0");
+                this.viewport.classList.add("presentation-viewport");
+
+                this.tabs = new LS.Tabs(this.content, {
+                    list: false,
+                    styled: false
+                });
+
+                this.options = LS.Util.defaults({
+                    resolution: [1920, 1080],
+                    globalEvents: true
+                }, options || window.PRESENTATION_META || {});
+
+                // Resize observer
+                this.resizeObserver = new ResizeObserver(() => {
+                    this.applyResolution();
+                });
+        
+                this.resizeObserver.observe(this.content);
+
+                window.addEventListener("resize", () => {
+                    this.applyResolution();
+                });
+
+                document.addEventListener("fullscreenchange", () => {
+                    this.applyResolution();
+                });
+
+                this.setResolution();
+
+                this.tabs.on("changed", (newTabId, oldTabId) => {
+                    console.log(newTabId, oldTabId);
+
+                    const newTab = this.tabs.tabs.get(newTabId);
+                    const oldTab = this.tabs.tabs.get(oldTabId);
+
+                    // Here we can perform whatever transitions and animations or whatever we want basically
+
+                    newTab.element.style.display = "";
+
+                    if(oldTab) {
+                        oldTab.element.style.display = "none";
+                    }
+
+                    this.emit("changed", newTabId, oldTabId);
+                });
+
+                if(this.options.globalEvents) {
+                    window.addEventListener("keydown", this.handleEvent.bind(this));
+                    window.addEventListener("wheel", this.handleEvent.bind(this));
+                }
+
+                this.container.addEventListener("click", this.handleEvent.bind(this));
+            }
+
+            applyResolution() {
+                const cw = window.innerWidth;
+                const ch = window.innerHeight;
+
+                const scale = Math.min(
+                    (this.options.containerWidth || cw) / this.options.resolution[0],    
+                    (this.options.containerHeight || ch) / this.options.resolution[1]
+                );
+
+                this.scale = scale;
+                this.content.style.transform=`translate(-50%,-50%) scale(${scale})`;
+            }
+
+            setResolution(w, h) {
+                this.options.resolution = [w || this.options.resolution[0], h || this.options.resolution[1]];
+                this.content.style.width = this.options.resolution[0] + "px";
+                this.content.style.height = this.options.resolution[1] + "px";
+                this.applyResolution();
+            }
+
+            handleEvent(event) {
+                switch(event.type) {
+                    case "keydown":
+                        switch(event.key) {
+                            case "ArrowLeft":
+                                this.tabs.previous();
+                                break;
+                            case "ArrowRight":
+                                this.tabs.next();
+                                break;
+                            case "f":
+                                this.toFullscreen();
+                                break;
+                        }
+                        break;
+
+                    case "wheel":
+                        break;
+
+                    case "click":
+                        this.tabs.next();
+                        break;
+
+                    // Add more cases as needed
+                }
+            }
+
+            toFullscreen() {
+                const fsTarget = this.container;
+                if (fsTarget.requestFullscreen) {
+                    fsTarget.requestFullscreen();
+                } else if (fsTarget.mozRequestFullScreen) { /* Firefox */
+                    fsTarget.mozRequestFullScreen();
+                } else if (fsTarget.webkitRequestFullscreen) { /* Chrome, Safari & Opera */
+                    fsTarget.webkitRequestFullscreen();
+                } else if (fsTarget.msRequestFullscreen) { /* IE/Edge */
+                    fsTarget.msRequestFullscreen();
+                }
+            }
+
+            add(container) {
+                const id = container.id || "slide-" + this.tabs.tabs.size + LS.Misc.uid();
+                this.tabs.add(id, container);
+
+                container.style.display = "none";
+
+                if(this.tabs.index === -1) {
+                    this.set(0);
+                }
+            }
+
+            set(id) {
+                this.tabs.set(id);
+            }
+
+            destroy() {
+                this.resizeObserver.disconnect();
+                this.container.remove();
+                this.container = null;
+                this.tabs.destroy();
+                this.tabs = null;
+                this.resizeObserver = null;
+                this.destroyed = true;
+            }
+        }
+
+        window.presentation = presentation;
+    </script>
+
+    <script>
+        for(const slide of document.querySelectorAll("#initial-slides > div")) {
+            presentation.add(slide);
+        }
+
+        window.addEventListener("DOMContentLoaded", () => {
+            document.body.append(presentation.container);
+            document.body.removeAttribute("state");
+        });
+    </script>
+
+    <style>
+        .presentation-container {
+            overflow: hidden;
+            height: 100%;
+            width: 100%;
+        }
+
+        .presentation-viewport {
+            transform: translate(50%, 50%);
+            height: 100%;
+            width: 100%;
+        }
+        
+        .presentation-content {
+            position: relative;
+
+            /* Slide */
+            .ls-tab-content {
+                position: absolute;
+                overflow: hidden;
+                height: 100%;
+                width: 100%;
+                inset: 0;
+            }
+
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+
+            img { pointer-events: none; }
+        }
+
+        body, html {
+            height: 100vh;
+            width: 100vw;
+            margin: 0;
+            overflow: hidden !important;
+            background-color: #000 !important;
+        }
+    </style>
+</body>
