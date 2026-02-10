@@ -7,6 +7,7 @@
 
 <body ls ls-style="flat" ls-theme="dark" .level-0 state="loading">
     <div #initial-slides hidden>
+        <!-- Slide content will go here -->
         <template::content />
     </div>
 
@@ -31,7 +32,8 @@
 
                 this.options = LS.Util.defaults({
                     resolution: [1920, 1080],
-                    globalEvents: true
+                    globalEvents: true,
+                    loop: false // If true, it'l loop around infinitely
                 }, options || window.PRESENTATION_META || {});
 
                 // Resize observer
@@ -101,10 +103,10 @@
                     case "keydown":
                         switch(event.key) {
                             case "ArrowLeft":
-                                this.tabs.previous();
+                                this.tabs.previous(this.options.loop);
                                 break;
                             case "ArrowRight":
-                                this.tabs.next();
+                                this.tabs.next(this.options.loop);
                                 break;
                             case "f":
                                 this.toFullscreen();
@@ -147,8 +149,24 @@
                 }
             }
 
+            /**
+             * Go to a specific slide.
+             * @param {string|number} id - The ID or index of the slide to go to.
+             */
             set(id) {
                 this.tabs.set(id);
+            }
+
+            /**
+             * Sorts the slides based on the provided compare function.
+             * @param {Function} compareFunction - The function used to determine the order of the slides.
+            */
+            sort(compareFunction) {
+                this.tabs.order.sort(compareFunction);
+            }
+
+            get index() {
+                return this.tabs.index;
             }
 
             destroy() {
@@ -159,6 +177,7 @@
                 this.tabs = null;
                 this.resizeObserver = null;
                 this.destroyed = true;
+                // TODO: destroy event handlers & stuff
             }
         }
 
@@ -166,9 +185,13 @@
     </script>
 
     <script>
+        // We add slides from the static content; but it can also be done programatically.
         for(const slide of document.querySelectorAll("#initial-slides > div")) {
             presentation.add(slide);
         }
+
+        // Slide order is kept by presentation.tabs.order (array of slide IDs).
+        // You can simply sort that array in whatever way you want to change the slide order.
 
         window.addEventListener("DOMContentLoaded", () => {
             document.body.append(presentation.container);
