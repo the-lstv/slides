@@ -5,31 +5,44 @@
 
 <script>
     const presentation = init({
-        // Lower resolution to make the content larger
+        // Lower resolution to make the content larger (it scales automatically)
         resolution: [1270, 720]
     });
 
-    presentation.on("ready", () => {
-        // Presentation is ready
+    LS.Color.setAccent("aquamarine");
 
+    presentation.on("ready", () => {
+        // Presentation is ready, we can do initialization here.
         Presentation.splitLetters(document.querySelector("#splitLettersThing"), "letter");
     });
 
-    presentation.on("changed", (newTab, oldTab) => {
+    presentation.on("changed", (newTab, oldTab, state) => {
+        if(state.initial) return;
 
-        // Yeah, adding transitions is this simple
+        // Adding transitions is this simple
         // This can be pretty much any kind of transition you want
 
         // You can animate any kind of object here too
         // Animations are cancelled and reset when the slide changes.
 
-        presentation.animate(newTab.element, [
-            { opacity: 0, transform: "scale(0.95)" },
-            { opacity: 1, transform: "scale(1)" }
-        ], {
-            duration: 450,
-            easing: Presentation.SPRING
-        });
+        // Different fadeout for the animated slide
+        if(oldTab && oldTab.id === "animatedBackground" && state.direction === 1) {
+                presentation.animate(newTab.element, [
+                { transform: "translateY(50%) scale(0.5)", opacity: 0, borderRadius: "50%" },
+                { transform: "translateY(0) scale(1)", opacity: 1, borderRadius: "0%" }
+            ], {
+                duration: 1000,
+                easing: Presentation.SPRING
+            });
+        } else {
+            presentation.animate(newTab.element, [
+                { opacity: 0, transform: "scale(0.95)" },
+                { opacity: 1, transform: "scale(1)" }
+            ], {
+                duration: 450,
+                easing: Presentation.SPRING
+            });
+        }
 
         if(oldTab) presentation.leaving(oldTab.element, [
             { opacity: 1, transform: "scale(1)" },
@@ -59,7 +72,7 @@
 
         if(newTab.id === "animatedBackground") {
             presentation.animate(presentation.content, [
-                { background: "var(--accent-20)" },
+                { background: "radial-gradient(circle, var(--accent-10), transparent)" },
             ], {
                 duration: 1000,
                 easing: "ease",
@@ -118,8 +131,8 @@
     </span>
 
     <div>
-        <a href="https://github.com/the-lstv/slides" target="_blank" class="ls-button pill margin-top-xlarge">View on GitHub</a>
-        <a href="#" class="ls-button pill margin-top-xlarge elevated">Next slide</a>
+        <a href="https://github.com/the-lstv/slides" target="_blank" class="ls-button pill margin-top-xlarge elevated">View on GitHub</a>
+        <a href="#" class="ls-button pill margin-top-xlarge">Next slide</a>
     </div>
 </div>
 
@@ -134,8 +147,15 @@
 <div .hello ls-accent="purple" ls-theme="light" .level-0>
     <div>
         With LS Slides, you get the full power of <strong>HTML, CSS, JS, SVG, Markdown</strong>, you name it.<br>
-        Thanks to LS, it also supports dynamic light/dark schema and <span style="color:var(--accent)">accents</span> (well, sorry for the flashbang 😅).<br>
+        It also supports dynamic light/dark mode and <span style="color:var(--accent)">accents</span> (well, sorry for the flashbang 😅).<br>
     </div>
+</div>
+
+<div .hello ls-accent="pink" .level-0>
+    <h1>
+        <ls-box .color .pill>The end</ls-box>
+    </h1>
+    Thank you for your attention, I hope you liked it
 </div>
 
 <style>

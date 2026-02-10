@@ -49,9 +49,14 @@
 
                 this.setResolution();
 
+                let initial = true, lastIndex = -1;
                 this.tabs.on("changed", (newTabId, oldTabId) => {
                     const newTab = this.tabs.tabs.get(newTabId);
                     const oldTab = this.tabs.tabs.get(oldTabId);
+
+                    const index = this.index;
+                    const direction = lastIndex < index ? 1 : -1;
+                    lastIndex = index;
 
                     this.cancelAnimations(); // Clear pending animations
 
@@ -66,7 +71,8 @@
                         left.style.display = "";
                     }
 
-                    this.emit("changed", [newTab, oldTab]);
+                    this.emit("changed", [newTab, oldTab, { initial, direction }]);
+                    initial = false;
                 });
 
                 if(this.options.globalEvents) {
