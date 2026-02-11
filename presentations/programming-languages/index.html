@@ -373,8 +373,8 @@
         animatedGradient.start();
     });
 
-    presentation.on("changed", (newTab, oldTab, state) => {
-        if(newTab.id === "notables") {
+    presentation.on("changed", (state, newSlide, oldSlide) => {
+        if(newSlide.id === "notables") {
             waves.start();
         } else {
             waves.stop();
@@ -382,13 +382,13 @@
 
         if(state.initial) return;
 
-        if(newTab.element.bgColors) {
-            bgColors = newTab.element.bgColors;
+        if(newSlide.element.bgColors) {
+            bgColors = newSlide.element.bgColors;
         }
 
         switch(true) {
-            case (oldTab && oldTab.id === "cover"):
-                if(oldTab) presentation.leaving(oldTab.element, [
+            case (oldSlide && oldSlide.id === "cover"):
+                if(oldSlide) presentation.leaving(oldSlide.element, [
                    { opacity: 1, transform: "translateY(0) scale(1)", zIndex: 1, borderRadius: "0", offset: 0, filter: "blur(0px)" },
                    { opacity: 1, transform: "translateY(-15px) translateX(40px) rotate(5deg) scale(0.98)", zIndex: 1, borderRadius: "20px", offset: 0.08 },
                    { opacity: 0, transform: "translateY(800px) translateX(150px) rotate(20deg) scale(0.8)", zIndex: 1, borderRadius: "100px", offset: 1, filter: "blur(50px)" }
@@ -397,7 +397,7 @@
                     easing: "ease-in-out"
                 });
                 
-                presentation.animate(newTab.element, [
+                presentation.animate(newSlide.element, [
                     { opacity: 0, transform: "translateY(-100px) scale(1.1) rotate(-3deg)", filter: "blur(10px)" },
                     { opacity: 0.5, transform: "translateY(-50px) scale(1.05) rotate(-1.5deg)", filter: "blur(5px)", offset: 0.4 },
                     { opacity: 1, transform: "translateY(0) scale(1) rotate(0deg)", filter: "blur(0px)" }
@@ -407,10 +407,10 @@
                 });
                 break;
             
-            case (newTab.id === "notables"):
-                presentation.leaving(oldTab.element);
+            case (newSlide.id === "notables"):
+                presentation.leaving(oldSlide.element);
 
-                presentation.animate(newTab.element, [
+                presentation.animate(newSlide.element, [
                     { opacity: 0, transform: "translateY(-80%)" },
                     { opacity: 1, transform: "translateY(0) scale(1)" }
                 ], {
@@ -420,7 +420,7 @@
                 break;
 
             default:
-                if(oldTab) presentation.leaving(oldTab.element, [
+                if(oldSlide) presentation.leaving(oldSlide.element, [
                     { opacity: 1, transform: "scale(1)" },
                     { opacity: 0, transform: "scale(0.95)" }
                 ], {
@@ -428,7 +428,7 @@
                     easing: Presentation.SPRING
                 });
 
-                presentation.animate(newTab.element, [
+                presentation.animate(newSlide.element, [
                     { opacity: 0, transform: "scale(0.95)" },
                     { opacity: 1, transform: "scale(1)" }
                 ], {

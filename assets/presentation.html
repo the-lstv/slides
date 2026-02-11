@@ -8,6 +8,13 @@
 <body ls ls-style="flat" ls-theme="dark" .level-0 state="loading">
     <script>
         class Presentation extends LS.EventEmitter {
+            /**
+             * Create a new presentation instance.
+             * @param {Object} options - Configuration options for the presentation.
+             * @param {number[]} options.resolution - The virtual resolution of the presentation (width, height).
+             * @param {boolean} options.globalEvents - Whether to listen for global keyboard and wheel events for navigation.
+             * @param {boolean} options.loop - If true, navigating past the last slide will loop back to the first slide, and vice versa.
+            */
             constructor(options) {
                 super();
 
@@ -28,8 +35,7 @@
                 this.options = LS.Util.defaults({
                     resolution: [1920, 1080],
                     globalEvents: true,
-                    hasTransitions: true,
-                    loop: false // If true, it'l loop around infinitely
+                    loop: false
                 }, options);
 
                 // Resize observer
@@ -49,10 +55,19 @@
 
                 this.setResolution();
 
-                let initial = true, lastIndex = -1;
-                this.tabs.on("changed", (newTabId, oldTabId) => {
-                    const newTab = this.tabs.tabs.get(newTabId);
-                    const oldTab = this.tabs.tabs.get(oldTabId);
+                this.state = {
+                    initial: true,
+                    direction: 0,
+                    index: -1,
+                    oldIndex: -1,
+                    newSlide: null,
+                    oldSlide: null
+                };
+
+                let lastIndex = -1;
+                this.tabs.on("changed", (newSlideId, oldSlideId) => {
+                    const newSlide = this.tabs.tabs.get(newSlideId);
+                    const oldSlide = this.tabs.tabs.get(oldSlideId);
 
                     const index = this.index;
                     const oldIndex = lastIndex;
@@ -61,19 +76,26 @@
 
                     this.cancelAnimations(); // Clear pending animations
 
-                    if(oldTab && !this.options.hasTransitions) {
-                        oldTab.element.style.display = "none";
-                    }
-
-                    newTab.element.style.display = "";
-                    newTab.element.classList.remove("left");
-                    for(const left of newTab.element.querySelectorAll(".left")) {
+                    newSlide.element.style.display = "";
+                    newSlide.element.classList.remove("left");
+                    for(const left of newSlide.element.querySelectorAll(".left")) {
                         left.classList.remove("left");
                         left.style.display = "";
                     }
 
-                    this.emit("changed", [newTab, oldTab, { initial, direction, index, oldIndex }]);
-                    initial = false;
+                    const state = this.state;
+                    state.index = index;
+                    state.oldIndex = oldIndex;
+                    state.direction = direction;
+                    state.newSlide = newSlide;
+                    state.oldSlide = oldSlide;
+
+                    this.quickEmit("changed", state, newSlide, oldSlide);
+                    this.state.initial = false;
+
+                    if(oldSlide && !oldSlide.element.classList.contains("leaving")) {
+                        oldSlide.element.style.display = "none";
+                    }
                 });
 
                 this.evh = this.handleEvent.bind(this);
@@ -84,9 +106,10 @@
 
                 this.container.addEventListener("click", this.evh);
             }
-            
-            static SPRING = 'linear(0, 0.0018, 0.007 1.17%, 0.0334, 0.0758, 0.1306 5.54%, 0.2505 8.16%, 0.6477 16.03%, 0.7622 18.65%, 0.8498, 0.9229 23.32%, 0.9878 25.94%, 1.0308 28.27%, 1.0643 30.9%, 1.0791, 1.0886 34.39%, 1.094, 1.0944 38.48%, 1.0903 40.81%, 1.0814 43.43%, 1.0362 53.05%, 1.0184 57.42%, 1.0059, 0.9976 65.58%, 0.9925 70.25%, 0.991 75.79%, 0.9996 99.98%)';
 
+            /**
+             * Apply the current resolution and scaling to the content.
+             */
             applyResolution() {
                 const cw = window.innerWidth;
                 const ch = window.innerHeight;
@@ -100,6 +123,11 @@
                 this.content.style.transform=`translate(-50%,-50%) scale(${scale})`;
             }
 
+            /**
+             * Set the presentation resolution. This is the "virtual" resolution that your slides are designed for. The presentation will be scaled to fit the container while maintaining the aspect ratio.
+             * @param {number} w - The width of the presentation resolution.
+             * @param {number} h - The height of the presentation resolution.
+             */
             setResolution(w, h) {
                 this.options.resolution = [w || this.options.resolution[0], h || this.options.resolution[1]];
                 this.content.style.width = this.options.resolution[0] + "px";
@@ -107,6 +135,10 @@
                 this.applyResolution();
             }
 
+            /**
+             * Event handler for global events (keyboard, wheel, click).
+             * @param {Event} event - The event object.
+             */
             handleEvent(event) {
                 switch(event.type) {
                     case "keydown":
@@ -138,6 +170,9 @@
                 }
             }
 
+            /**
+             * Request fullscreen for the presentation container.
+             */
             toFullscreen() {
                 const fsTarget = this.container;
                 if (fsTarget.requestFullscreen) {
@@ -151,6 +186,10 @@
                 }
             }
 
+            /**
+             * Add a new slide to the presentation.
+             * @param {HTMLElement} container - The container element for the slide.
+             */
             add(container) {
                 const id = container.id || "slide-" + this.tabs.tabs.size + LS.Misc.uid();
                 this.tabs.add(id, container);
@@ -186,6 +225,9 @@
 
             /**
              * Helper for animations.
+             * @param {string|HTMLElement|HTMLElement[]} target - The target element(s) or selector to animate.
+             * @param {Keyframe[]} keyframes - Keyframes for the animation.
+             * @param {Object} options - Options for the animation (duration, easing, etc.).
             */
             animate(target, keyframes, options) {
                 if(!target) return;
@@ -214,9 +256,13 @@
 
             /**
              * Helper for leaving animations (hide element on end).
+             * @param {string|HTMLElement|HTMLElement[]} target - The target element(s) or selector to animate.
+             * @param {Keyframe[]} keyframes - Keyframes for the animation.
+             * @param {Object} options - Options for the animation (duration, easing, etc.).
             */
             leaving(target, keyframes, options) {
                 const animation = this.animate(target, keyframes, options);
+                animation.effect.target.classList.add("leaving");
                 animation.isLeaving = true;
 
                 animation.onfinish = () => {
@@ -224,15 +270,20 @@
                         // this.animations.splice(this.animations.indexOf(animation), 1);
                         animation.effect.target.style.display = "none";
                         animation.effect.target.classList.add("left");
+                        animation.effect.target.classList.remove("leaving");
                     }
                 };
             }
 
+            /**
+             * Cancel all ongoing animations and clear the animation queue.
+             */
             cancelAnimations() {
                 for(const animation of this.#animations) {
                     if(animation.isLeaving) {
                         animation.effect.target.style.display = "none";
                         animation.effect.target.classList.add("left");
+                        animation.effect.target.classList.remove("leaving");
                     }
 
                     animation.cancel();
@@ -240,8 +291,28 @@
 
                 this.#animations.length = 0;
             }
+            /**
+             * Helper for transitions between two elements.
+             * @param {string|HTMLElement} newTarget - The new target element or selector to transition in.
+             * @param {string|HTMLElement} oldTarget - The old target element or selector to transition out.
+             * @param {Object} keyframes - An object containing 'in' and 'out' keyframe arrays for the new and old targets, respectively.
+             * @param {Object} options - Options for the animations (duration, easing, etc.).
+             */
+            transition(newTarget, oldTarget, keyframes, options) {
+                if(oldTarget) {
+                    this.leaving(oldTarget, keyframes.out, options.out? options.out: options);
+                }
 
-            // Helper to split letters on an element
+                if(newTarget) {
+                    this.animate(newTarget, keyframes.in, options.in? options.in: options);
+                }
+            }
+
+            /**
+             * Helper to split the text content of an element into individual spans for each letter.
+             * @param {HTMLElement} target - The target element whose text content will be split.
+             * @param {string} [className=""] - Optional class name to add to each letter span.
+             */
             static splitLetters(target, className = "") {
                 const letters = target.textContent.split("");
                 target.textContent = "";
@@ -271,6 +342,56 @@
 
                 // TODO: destroy event handlers & stuff
             }
+
+            // Static spring easing function (generate your own if you want dynamic physics)
+            static SPRING = 'linear(0, 0.0018, 0.007 1.17%, 0.0334, 0.0758, 0.1306 5.54%, 0.2505 8.16%, 0.6477 16.03%, 0.7622 18.65%, 0.8498, 0.9229 23.32%, 0.9878 25.94%, 1.0308 28.27%, 1.0643 30.9%, 1.0791, 1.0886 34.39%, 1.094, 1.0944 38.48%, 1.0903 40.81%, 1.0814 43.43%, 1.0362 53.05%, 1.0184 57.42%, 1.0059, 0.9976 65.58%, 0.9925 70.25%, 0.991 75.79%, 0.9996 99.98%)';
+
+            // Simple transition presets
+            static TRANSITIONS = {
+                fade: {
+                    in: [
+                        { opacity: 0 },
+                        { opacity: 1 }
+                    ],
+                    out: [
+                        { opacity: 1 },
+                        { opacity: 0 }
+                    ]
+                },
+
+                scale: {
+                    in: [
+                        { opacity: 0, transform: "scale(0.95)" },
+                        { opacity: 1, transform: "scale(1)" }
+                    ],
+                    out: [
+                        { opacity: 1, transform: "scale(1)" },
+                        { opacity: 0, transform: "scale(0.95)" }
+                    ]
+                },
+
+                slideLeft: {
+                    in: [
+                        { opacity: 0, transform: "translateX(20px)" },
+                        { opacity: 1, transform: "translateX(0)" }
+                    ],
+                    out: [
+                        { opacity: 1, transform: "translateX(0)" },
+                        { opacity: 0, transform: "translateX(-20px)" }
+                    ]
+                },
+
+                slideRight: {
+                    in: [
+                        { opacity: 0, transform: "translateX(-20px)" },
+                        { opacity: 1, transform: "translateX(0)" }
+                    ],
+                    out: [
+                        { opacity: 1, transform: "translateX(0)" },
+                        { opacity: 0, transform: "translateX(20px)" }
+                    ]
+                },
+            };
         }
 
         window.Presentation = Presentation;

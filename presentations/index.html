@@ -6,6 +6,7 @@
 <script>
     const presentation = init({
         // Lower resolution to make the content larger (it scales automatically)
+        // We can set any resolution/aspect ratio, even later via presentation.setResolution(w, h)
         resolution: [1270, 720]
     });
 
@@ -16,18 +17,18 @@
         Presentation.splitLetters(document.querySelector("#splitLettersThing"), "letter");
     });
 
-    presentation.on("changed", (newTab, oldTab, state) => {
-        if(state.initial) return;
+    presentation.on("changed", (state, newSlide, oldSlide) => {
+        if(state.initial) return; // Skip the initial animation
 
-        // Adding transitions is this simple
-        // This can be pretty much any kind of transition you want
+        // Adding transitions is very simple
+        // It can be pretty much any kind of transition you want
 
         // You can animate any kind of object here too
         // Animations are cancelled and reset when the slide changes.
 
         // Different fadeout for the animated slide
-        if(oldTab && oldTab.id === "animatedBackground" && state.direction === 1) {
-                presentation.animate(newTab.element, [
+        if(oldSlide.id === "animatedBackground" && state.direction === 1) {
+            presentation.animate(newSlide.element, [
                 { transform: "translateY(50%) scale(0.5)", opacity: 0, borderRadius: "50%" },
                 { transform: "translateY(0) scale(1)", opacity: 1, borderRadius: "0%" }
             ], {
@@ -35,23 +36,14 @@
                 easing: Presentation.SPRING
             });
         } else {
-            presentation.animate(newTab.element, [
-                { opacity: 0, transform: "scale(0.95)" },
-                { opacity: 1, transform: "scale(1)" }
-            ], {
+            // Here we use a preset, but you can add custom transitions ({ in: keyframes[], out: keyframes[] })
+            presentation.transition(newSlide.element, oldSlide.element, Presentation.TRANSITIONS.scale, {
                 duration: 450,
                 easing: Presentation.SPRING
             });
         }
 
-        if(oldTab) presentation.leaving(oldTab.element, [
-            { opacity: 1, transform: "scale(1)" },
-            { opacity: 0, transform: "scale(0.95)" }
-        ], {
-            duration: 450,
-            easing: Presentation.SPRING
-        });
-
+        // Animations are added at the start of each slide, and cancelled at the end
         presentation.animate(".someSpinningThing", [
             { transform: "rotate(0deg)" },
             { transform: "rotate(360deg)" }
@@ -61,16 +53,18 @@
             easing: Presentation.SPRING
         });
 
+        // You can also animate many elements at once, eg. via a class
         presentation.animate(".letter", [
             { opacity: 0, transform: "translateY(20px)" },
             { opacity: 1, transform: "translateY(0)" }
         ], {
             duration: 500,
-            staggering: 50,
+            staggering: 50, // Delay between each animation in milliseconds
             easing: Presentation.SPRING
         });
 
-        if(newTab.id === "animatedBackground") {
+        if(newSlide.id === "animatedBackground") {
+            // Animate the whole container
             presentation.animate(presentation.content, [
                 { background: "radial-gradient(circle, var(--accent-10), transparent)" },
             ], {
@@ -79,7 +73,8 @@
                 fill: "forwards"
             });
 
-            presentation.animate(newTab.element, [
+            // Animate the slide
+            presentation.animate(newSlide.element, [
                 { transform: "scale(1)" },
                 { transform: "scale(1.2) skew(5deg, -5deg)" }
             ], {
@@ -89,9 +84,9 @@
                 fill: "forwards"
             });
 
-            // Particles
-            const particles = newTab.element.querySelector(".particles");
-            particles.innerHTML = "";
+            // Particles, why not
+            const particles = newSlide.element.querySelector(".particles");
+            particles.replaceChildren();
 
             for(let i = 0; i < 30; i++) {
                 const particle = LS.Create({ class: "particle" });
@@ -140,7 +135,7 @@
     <div .particles />
     <h1 .someSpinningThing>👋</h1>
     <h2 #splitLettersThing>You can animate anything!</h2>
-    In any way. And it's pretty simple, too.<br>
+    In any way. And it's pretty easy, too.<br>
     With hardware acceleration :P
 </div>
 
