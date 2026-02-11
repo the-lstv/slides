@@ -353,6 +353,9 @@
     presentation.on("ready", () => {
         hljs.highlightAll();
 
+        const cs = presentation.getSlideById("compilation");
+        presentation.setSteps(cs, 3);
+
         for(let code of document.querySelectorAll(".hljs")) {
             // Convert text nodes to spans
             for(let node of code.childNodes) {
@@ -371,6 +374,40 @@
         }
 
         animatedGradient.start();
+    });
+
+    presentation.on("step", (state) => {
+        if(state.slide.id === "compilation") {
+            switch(state.step) {
+                case 1:
+                    presentation.animate(".compilation-step-1", [
+                        { opacity: 0, transform: "translateY(20px)" },
+                        { opacity: 1, transform: "translateY(0)" }
+                    ], {
+                        duration: 400,
+                        easing: Presentation.SPRING
+                    });
+                    break;
+                case 2:
+                    presentation.animate(".compilation-step-2", [
+                        { opacity: 0, transform: "translateY(20px)" },
+                        { opacity: 1, transform: "translateY(0)" }
+                    ], {
+                        duration: 400,
+                        easing: Presentation.SPRING
+                    });
+                    break;
+                case 3:
+                    presentation.animate(".compilation-step-3", [
+                        { opacity: 0, transform: "translateY(20px)" },
+                        { opacity: 1, transform: "translateY(0)" }
+                    ], {
+                        duration: 400,
+                        easing: Presentation.SPRING
+                    });
+                    break;
+            }
+        }
     });
 
     presentation.on("changed", (state, newSlide, oldSlide) => {

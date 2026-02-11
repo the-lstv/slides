@@ -15,10 +15,29 @@
     presentation.on("ready", () => {
         // Presentation is ready, we can do initialization here.
         Presentation.splitLetters(document.querySelector("#splitLettersThing"), "letter");
+
+        // We can also set steps
+        presentation.setSteps(presentation.getSlide(1), 2);
     });
+
+    const stepAnimations = [
+        { transform: "scale(1.2) skew(5deg, -5deg)" },
+        { transform: "scale(1.4) skew(-10deg, 10deg) translateY(-10px)" },
+        { transform: "scale(1.6) skew(15deg, -15deg) translateY(-20px)" },
+        { transform: "scale(1.8) skew(20deg, -20deg) translateY(-25px)" },
+    ];
 
     presentation.on("step", (state) => {
         // We can catch steps here
+
+        presentation.animate(state.newSlide.element, [
+            stepAnimations[state.step - 1],
+            stepAnimations[state.step]
+        ], {
+            duration: 200,
+            fill: "forwards",
+            easing: Presentation.SPRING
+        });
     });
 
     presentation.on("changed", (state, newSlide, oldSlide) => {
@@ -65,6 +84,31 @@
             duration: 500,
             staggering: 50, // Delay between each animation in milliseconds
             easing: Presentation.SPRING
+        });
+
+        presentation.animate(".letter", [
+            { textShadow: `0 0 0 currentColor` },
+            { textShadow: `0 0 15px currentColor`, offset: 0.5 },
+            { textShadow: `0 0 0 currentColor` }
+        ], {
+            duration: 2000,
+            staggering: 120,
+            iterations: Infinity,
+            easing: "ease-in-out"
+        });
+
+        presentation.animate(".any", [
+            { color: "red" },
+            { color: "orange" },
+            { color: "yellow" },
+            { color: "green" },
+            { color: "aquamarine" },
+            { color: "violet" }
+        ], {
+            duration: 2000,
+            iterations: Infinity,
+            direction: "alternate",
+            easing: "linear"
         });
 
         if(newSlide.id === "animatedBackground") {
@@ -139,8 +183,7 @@
     <div .particles />
     <h1 .someSpinningThing>👋</h1>
     <h2 #splitLettersThing>You can animate anything!</h2>
-    In any way. And it's pretty easy, too.<br>
-    With hardware acceleration :P
+    <span>In <ls-box .inline .color .any>any</ls-box> way. And it's pretty easy, too.<br>With hardware acceleration :P</span>
 </div>
 
 <div .hello ls-accent="purple" ls-theme="light" .level-0>
@@ -158,6 +201,13 @@
 </div>
 
 <style>
+    /* Stabilize text rendering during animations */
+    .presentation-content {
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        text-rendering: optimizeLegibility;
+    }
+
     .hello {
         display: flex;
         justify-content: center;
@@ -167,6 +217,10 @@
         flex-direction: column;
 
         gap: 20px;
+
+        /* Prevent jittering during animations */
+        transform: translateZ(0);
+        backface-visibility: hidden;
 
         .yap {
             width: 800px;
@@ -179,13 +233,18 @@
 
     .someSpinningThing {
         font-size: 3em;
+        transform: translateZ(0);
+        backface-visibility: hidden;
     }
 
     #splitLettersThing {
         white-space: pre-wrap;
+        transform: translateZ(0);
 
         .letter {
             display: inline-block;
+            backface-visibility: hidden;
+            transform: translateZ(0);
         }
     }
 

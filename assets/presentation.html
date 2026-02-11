@@ -79,6 +79,8 @@
 
                     newSlide.element.style.display = "";
                     newSlide.element.classList.remove("left");
+                    newSlide.currentStep = 0;
+
                     for(const left of newSlide.element.querySelectorAll(".left")) {
                         left.classList.remove("left");
                         left.style.display = "";
@@ -90,7 +92,7 @@
                     state.direction = direction;
                     state.newSlide = newSlide;
                     state.oldSlide = oldSlide;
-                    state.step = newSlide.currentStep || 0;
+                    state.step = 0;
 
                     this.quickEmit("changed", state, newSlide, oldSlide);
                     this.state.initial = false;
@@ -215,17 +217,15 @@
              * Go to the next slide, or advance steps.
              */
             next(skipSteps = false) {
-                const currentSlide = this.tabs.currentTab;
-                
-                if(!skipSteps && currentSlide && currentSlide.steps && currentSlide.currentStep < currentSlide.steps - 1) {
-                    currentSlide.currentStep++;
-                    this.state.step = currentSlide.currentStep;
-                    this.quickEmit("step", this.state);
-                    return;
-                }
+                if(!skipSteps) {
+                    const currentSlide = this.getSlide(this.index);
 
-                if(currentSlide && currentSlide.steps) {
-                    currentSlide.currentStep = 0;
+                    if(currentSlide && currentSlide.steps && currentSlide.currentStep < currentSlide.steps) {
+                        currentSlide.currentStep++;
+                        this.state.step = currentSlide.currentStep;
+                        this.quickEmit("step", this.state);
+                        return;
+                    }
                 }
 
                 this.tabs.next(this.options.loop);
@@ -234,20 +234,7 @@
             /**
              * Go to the previous slide, or go back steps.
              */
-            previous(skipSteps = false) {
-                const currentSlide = this.tabs.currentTab;
-                
-                if(!skipSteps && currentSlide && currentSlide.steps && currentSlide.currentStep > 0) {
-                    currentSlide.currentStep--;
-                    this.state.step = currentSlide.currentStep;
-                    this.quickEmit("step", this.state);
-                    return;
-                }
-
-                if(currentSlide && currentSlide.steps) {
-                    currentSlide.currentStep = currentSlide.steps - 1;
-                }
-
+            previous() {
                 this.tabs.previous(this.options.loop);
             }
 
