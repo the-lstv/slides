@@ -5,7 +5,7 @@
     @use("/programming-languages/assets/shader.js");
 </head>
 
-<div>
+<div #cover>
     <svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080" viewBox="0 0 1920 1080" fill="none">
     <rect width="1920" height="1080" fill="url(#paint0_radial_10783_70)"/>
     <text fill="#111111" style="white-space: pre" xml:space="preserve" font-family="JetBrains Mono" font-size="96" font-weight="800" letter-spacing="-0.02em"><tspan x="196" y="827.06">Programming languages</tspan></text>
@@ -73,7 +73,7 @@
     <rect x="206" y="771" width="160" height="63" fill="#197B8F" fill-opacity="0.25"/>
     <rect x="206" y="841" width="174" height="63" fill="#197B8F" fill-opacity="0.25"/>
     <rect x="206" y="914" width="255" height="63" fill="#197B8F" fill-opacity="0.25"/>
-    <text fill="#29BEC8" style="white-space: pre" xml:space="preserve" font-family="IBM Plex Mono" font-size="36" letter-spacing="-0.02em"><tspan x="325.525" y="739.5">  is a multi-step process of converting code to machine code.&#10;</tspan><tspan x="96" y="775.5">&#10;</tspan><tspan x="96" y="811.5">   1. </tspan><tspan x="367.257" y="811.5">- Code is split into &#x201c;words&#x201d;.&#10;</tspan><tspan x="96" y="847.5">&#10;</tspan><tspan x="96" y="883.5">   2. </tspan><tspan x="388.123" y="883.5">- The compiler makes a structured Abstract Syntax Tree.&#10;</tspan><tspan x="96" y="919.5">&#10;</tspan><tspan x="96" y="955.5">   3. </tspan><tspan x="471.587" y="955.5">- The tree is optimized and compiled into machine code.</tspan></text>
+    <text fill="#29BEC8" style="white-space: pre" xml:space="preserve" font-family="IBM Plex Mono" font-size="36" letter-spacing="-0.02em"><tspan x="325.525" y="739.5">  is a multi-step process of converting code to machine code.&#10;</tspan><tspan x="96" y="775.5">&#10;</tspan><tspan x="136" y="811.5">   1. </tspan><tspan x="367.257" y="811.5">- Code is split into &#x201c;words&#x201d;.&#10;</tspan><tspan x="96" y="847.5">&#10;</tspan><tspan x="136" y="883.5">   2. </tspan><tspan x="388.123" y="883.5">- The compiler makes a structured Abstract Syntax Tree.&#10;</tspan><tspan x="136" y="919.5">&#10;</tspan><tspan x="136" y="955.5">   3. </tspan><tspan x="471.587" y="955.5">- The tree is optimized and compiled into machine code.</tspan></text>
     <text fill="#29BEC8" style="white-space: pre" xml:space="preserve" font-family="IBM Plex Mono" font-size="36" font-weight="bold" letter-spacing="-0.02em"><tspan x="96" y="739.5">Compilation</tspan><tspan x="221.196" y="811.5">Lexing </tspan><tspan x="221.196" y="883.5">Parsing </tspan><tspan x="221.196" y="955.5">Compilation </tspan></text>
     <path d="M115 783L115 822C115 824.761 117.239 827 120 827L135 827" stroke="#124458" stroke-width="3"/>
     <path d="M115 847L115 886C115 888.761 117.239 891 120 891L135 891" stroke="#124458" stroke-width="3"/>
@@ -144,7 +144,7 @@
     <stop stop-color="#77BEC3"/>
     <stop offset="1" stop-color="#395B5D" stop-opacity="0.4"/>
     </linearGradient>
-    <image id="image0_10784_659" width="295" height="277" preserveAspectRatio="none" xlink:href="/programming-languages/assets/ast.png"/>
+    <image id="image0_10784_659" width="295" height="277" preserveAspectRatio="none" xlink:href="https://cdn.extragon.cloud/file/de3509560c50c53.webp"/>
     </defs>
     </svg>
 </div>
@@ -285,6 +285,11 @@
     <stop offset="1" stop-color="#2B023E"/>
     </linearGradient>
     </defs>
+    <foreignObject x="100" y="730" width="800" height="300">
+        <pre><code class="language-typescript">fn main () {
+    print("Hello world");
+}</code></pre>
+    </foreignObject>
     </svg>
 </div>
 
@@ -382,14 +387,35 @@
         }
 
         switch(true) {
-            case (state.index === 1):
+            case (oldTab && oldTab.id === "cover"):
                 if(oldTab) presentation.leaving(oldTab.element, [
-                   { opacity: 1, transform: "translateY(0)", zIndex: 1, borderRadius: "0", offset: 0 },
-                   { opacity: 1, transform: "translateY(-15px) translateX(40px) rotate(5deg)", zIndex: 1, borderRadius: "20px", offset: 0.08 },
-                   { opacity: 0, transform: "translateY(800px) translateX(150px) rotate(20deg)", zIndex: 1, borderRadius: "100px", offset: 1 }
+                   { opacity: 1, transform: "translateY(0) scale(1)", zIndex: 1, borderRadius: "0", offset: 0, filter: "blur(0px)" },
+                   { opacity: 1, transform: "translateY(-15px) translateX(40px) rotate(5deg) scale(0.98)", zIndex: 1, borderRadius: "20px", offset: 0.08 },
+                   { opacity: 0, transform: "translateY(800px) translateX(150px) rotate(20deg) scale(0.8)", zIndex: 1, borderRadius: "100px", offset: 1, filter: "blur(50px)" }
                 ], {
                     duration: 650,
                     easing: "ease-in-out"
+                });
+                
+                presentation.animate(newTab.element, [
+                    { opacity: 0, transform: "translateY(-100px) scale(1.1) rotate(-3deg)", filter: "blur(10px)" },
+                    { opacity: 0.5, transform: "translateY(-50px) scale(1.05) rotate(-1.5deg)", filter: "blur(5px)", offset: 0.4 },
+                    { opacity: 1, transform: "translateY(0) scale(1) rotate(0deg)", filter: "blur(0px)" }
+                ], {
+                    duration: 800,
+                    easing: Presentation.SPRING
+                });
+                break;
+            
+            case (newTab.id === "notables"):
+                presentation.leaving(oldTab.element);
+
+                presentation.animate(newTab.element, [
+                    { opacity: 0, transform: "translateY(-80%)" },
+                    { opacity: 1, transform: "translateY(0) scale(1)" }
+                ], {
+                    duration: 450,
+                    easing: Presentation.SPRING
                 });
                 break;
 
@@ -421,13 +447,25 @@
         });
 
         presentation.animate(".hljs > *", [
-            { opacity: 0, transform: "translateX(-10px)" },
-            { opacity: 1, transform: "translateX(0)" }
+            { opacity: 0, filter: "blur(5px)", textShadow: `0 0 0px currentColor` },
+            { opacity: 0.7, filter: "blur(2px)", textShadow: `0 0 15px currentColor`, offset: 0.5 },
+            { opacity: 1, filter: "blur(0px)", textShadow: `0 0 8px currentColor` }
         ], {
-            duration: 450,
-            staggering: 150,
+            duration: 600,
+            staggering: 80,
             fill: "forwards",
             easing: Presentation.SPRING
+        });
+
+        presentation.animate(".hljs > *", [
+            { textShadow: `0 0 0 currentColor` },
+            { textShadow: `0 0 15px currentColor`, offset: 0.5 },
+            { textShadow: `0 0 0 currentColor` }
+        ], {
+            duration: 2000,
+            staggering: 120,
+            iterations: Infinity,
+            easing: "ease-in-out"
         });
     });
 </script>
@@ -449,7 +487,6 @@
     }
 
     .hljs > * {
-        display: inline-block;
         opacity: 0;
     }
 
