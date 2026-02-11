@@ -17,6 +17,10 @@
         Presentation.splitLetters(document.querySelector("#splitLettersThing"), "letter");
     });
 
+    presentation.on("step", (state) => {
+        // We can catch steps here
+    });
+
     presentation.on("changed", (state, newSlide, oldSlide) => {
         if(state.initial) return; // Skip the initial animation
 

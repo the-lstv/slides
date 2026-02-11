@@ -60,6 +60,7 @@
                     direction: 0,
                     index: -1,
                     oldIndex: -1,
+                    step: 0,
                     newSlide: null,
                     oldSlide: null
                 };
@@ -89,6 +90,7 @@
                     state.direction = direction;
                     state.newSlide = newSlide;
                     state.oldSlide = oldSlide;
+                    state.step = newSlide.currentStep || 0;
 
                     this.quickEmit("changed", state, newSlide, oldSlide);
                     this.state.initial = false;
@@ -144,10 +146,10 @@
                     case "keydown":
                         switch(event.key) {
                             case "ArrowLeft":
-                                this.tabs.previous(this.options.loop);
+                                this.previous();
                                 break;
                             case "ArrowRight": case " ":
-                                this.tabs.next(this.options.loop);
+                                this.next();
                                 break;
                             case "f":
                                 this.toFullscreen();
@@ -160,9 +162,9 @@
 
                     case "click":
                         if(event.clientX < window.innerWidth / 2) {
-                            this.tabs.previous(this.options.loop);
+                            this.previous();
                         } else {
-                            this.tabs.next(this.options.loop);
+                            this.next();
                         }
                         break;
 
@@ -207,6 +209,46 @@
              */
             set(id) {
                 this.tabs.set(id);
+            }
+
+            /**
+             * Go to the next slide, or advance steps.
+             */
+            next(skipSteps = false) {
+                const currentSlide = this.tabs.currentTab;
+                
+                if(!skipSteps && currentSlide && currentSlide.steps && currentSlide.currentStep < currentSlide.steps - 1) {
+                    currentSlide.currentStep++;
+                    this.state.step = currentSlide.currentStep;
+                    this.quickEmit("step", this.state);
+                    return;
+                }
+
+                if(currentSlide && currentSlide.steps) {
+                    currentSlide.currentStep = 0;
+                }
+
+                this.tabs.next(this.options.loop);
+            }
+
+            /**
+             * Go to the previous slide, or go back steps.
+             */
+            previous(skipSteps = false) {
+                const currentSlide = this.tabs.currentTab;
+                
+                if(!skipSteps && currentSlide && currentSlide.steps && currentSlide.currentStep > 0) {
+                    currentSlide.currentStep--;
+                    this.state.step = currentSlide.currentStep;
+                    this.quickEmit("step", this.state);
+                    return;
+                }
+
+                if(currentSlide && currentSlide.steps) {
+                    currentSlide.currentStep = currentSlide.steps - 1;
+                }
+
+                this.tabs.previous(this.options.loop);
             }
 
             /**
@@ -324,6 +366,33 @@
                     }
                     target.appendChild(span);
                 }
+            }
+
+            /**
+             * Set steps for a slide, allowing you to reveal content in stages.
+             * @param {object} slide - The slide object to set steps for.
+             * @param {number} stepCount - The total number of steps for the slide.
+             */
+            setSteps(slide, stepCount) {
+                slide.steps = stepCount;
+                slide.currentStep = 0;
+            }
+
+            getSlide(index) {
+                return this.tabs.tabs.get(this.tabs.order[index]);
+            }
+
+            getSlideById(id) {
+                return this.tabs.tabs.get(id);
+            }
+
+            /**
+             * Find the slide object associated with a given element.
+             * Warning: This is not an efficient way to find a slide; inside slides, use getSlide or getSlideById (which are both O(1)) whenever possible.
+             * @param {HTMLElement} element - The element to find the associated slide for.
+             */
+            findSlideFromElement(element) {
+                return this.tabs.tabs.values().find(v => v.element === element);
             }
 
             destroy() {
